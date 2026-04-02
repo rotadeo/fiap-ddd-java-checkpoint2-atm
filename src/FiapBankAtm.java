@@ -11,6 +11,8 @@ public class FiapBankAtm {
         int indiceEspaco;
         String primeiroNomeUsuario;
 
+        System.out.println("=== CADASTRO DE USUÁRIO ===");
+
         do {
             System.out.println("Informe o Nome Completo (nome e sobrenome): ");
             nomeUsuario = input.nextLine();
@@ -44,8 +46,32 @@ public class FiapBankAtm {
         } while (!matcher.matches());
 
         System.out.println("Senha cadastrada com sucesso para o usuário " + nomeUsuario.toUpperCase());
+        System.out.println("Cadastro finalizado!");
 
+        System.out.println("=== LOGIN DE USUÁRIO ===");
 
+        int contadorTentativas = 0;
+        String senhaLoggin;
+
+        do {
+            System.out.println("Informe sua senha: ");
+            senhaLoggin = input.nextLine();
+
+            if (senhaLoggin.equals(senhaForte)) {
+                break;
+            } else {
+                System.out.println("Senha Incorreta");
+                contadorTentativas ++;
+            }
+
+            if (contadorTentativas == 3) {
+                System.out.println("ACESSO BLOQUEADO");
+                System.exit(0);
+            }
+
+        } while (true);
+
+        System.out.println("Login efetuado com sucesso");
 
 
     }
