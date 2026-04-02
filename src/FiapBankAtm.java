@@ -73,15 +73,14 @@ public class FiapBankAtm {
 
         System.out.println("Login efetuado com sucesso");
 
-        StringBuilder menuBuilder = new StringBuilder();
-        menuBuilder
-                .append("=== MENU PRINCIPAL ===\n")
-                .append("[1] Consultar Saldo\n")
-                .append("[2] Fazer Depósito\n")
-                .append("[3] Fazer Saque\n")
-                .append("[4] Sair")
-        ;
-        String menuPrincipal = menuBuilder.toString();
+
+        String menuPrincipal = """
+               === MENU PRINCIPAL ===
+               [1] Consultar Saldo
+               [2] Fazer Depósito
+               [3] Fazer Saque
+               [4] Sair
+               """;
 
         double saldo = 0.0;
 
