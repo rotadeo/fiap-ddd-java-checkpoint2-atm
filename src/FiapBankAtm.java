@@ -73,6 +73,60 @@ public class FiapBankAtm {
 
         System.out.println("Login efetuado com sucesso");
 
+        StringBuilder menuBuilder = new StringBuilder();
+        menuBuilder
+                .append("=== MENU PRINCIPAL ===\n")
+                .append("[1] Consultar Saldo\n")
+                .append("[2] Fazer Depósito\n")
+                .append("[3] Fazer Saque\n")
+                .append("[4] Sair")
+        ;
+        String menuPrincipal = menuBuilder.toString();
+
+        double saldo = 0.0;
+
+        Menu:
+        while (true) {
+            System.out.println(menuPrincipal);
+            System.out.println("Selecione uma opção: ");
+            int opcaoMenu = input.nextInt();
+            input.nextLine();
+            switch (opcaoMenu) {
+                case 1:
+                    System.out.printf("Saldo Atual: R$%.2f%n", saldo);
+                    break;
+                case 2:
+                    System.out.println("Informe o valor do depósito: ");
+                    double deposito = input.nextDouble();
+                    input.nextLine();
+                    if (deposito <= 0) {
+                        System.out.println("Valor de depósito inválido");
+                        break;
+                    } else {
+                        saldo += deposito;
+                        System.out.printf("R$%.2f Depositado com sucesso%n", deposito);
+                        break;
+                    }
+                case 3:
+                    System.out.println("Informe o valor do saque: ");
+                    double saque = input.nextDouble();
+                    input.nextLine();
+                    if (saque <= 0 || saque > saldo) {
+                        System.out.println("Valor de saque inválido");
+                        break;
+                    } else {
+                        saldo -= saque;
+                        System.out.printf("R$%.2f Sacado com sucesso%n", saque);
+                        break;
+                    }
+                case 4:
+                    System.out.println("O FIAP Bank agradece sua preferência!");
+                    break Menu;
+                default:
+                    System.out.println("Opção inválida. Escolha uma opção válida");
+
+            }
+        }
 
     }
 }
