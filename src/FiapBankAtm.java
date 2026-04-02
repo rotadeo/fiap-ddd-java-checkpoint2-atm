@@ -11,12 +11,12 @@ public class FiapBankAtm {
         int indiceEspaco;
         String primeiroNomeUsuario;
 
-        System.out.println("=== CADASTRO DE USUÁRIO ===");
+        System.out.println("\n=== CADASTRO DE USUÁRIO ===");
 
         do {
             System.out.println("Informe o Nome Completo (nome e sobrenome): ");
-            nomeUsuario = input.nextLine();
-            indiceEspaco = nomeUsuario.strip().indexOf(" ");
+            nomeUsuario = input.nextLine().strip();
+            indiceEspaco = nomeUsuario.indexOf(" ");
 
             if (indiceEspaco == -1) {
                 System.out.println("Erro: Você digitou apenas um nome. Por favor, inclua o sobrenome");
@@ -48,7 +48,7 @@ public class FiapBankAtm {
         System.out.println("Senha cadastrada com sucesso para o usuário " + nomeUsuario.toUpperCase());
         System.out.println("Cadastro finalizado!");
 
-        System.out.println("=== LOGIN DE USUÁRIO ===");
+        System.out.println("\n=== LOGIN DE USUÁRIO ===");
 
         int contadorTentativas = 0;
         String senhaLoggin;
