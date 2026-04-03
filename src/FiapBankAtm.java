@@ -1,7 +1,5 @@
 import java.util.Scanner;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FiapBankAtm {
     public static void main(String[] args) {
@@ -29,21 +27,17 @@ public class FiapBankAtm {
 
 
         String regex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*()\\-_+=?><]).{8,}$";
-        Pattern pattern = Pattern.compile(regex);
-
         String senhaForte;
-        Matcher matcher;
 
         do {
             System.out.println("Informe um senha forte: ");
             senhaForte = input.nextLine();
-            matcher = pattern.matcher(senhaForte);
 
-            if (!matcher.matches()) {
+            if (!senhaForte.matches(regex)) {
                 System.out.println("Erro: A senha não atende aos requisitos de segurança.");
             }
 
-        } while (!matcher.matches());
+        } while (!senhaForte.matches(regex));
 
         System.out.println("Senha cadastrada com sucesso para o usuário " + nomeUsuario.toUpperCase());
         System.out.println("Cadastro finalizado!");
