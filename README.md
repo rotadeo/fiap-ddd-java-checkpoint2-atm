@@ -55,7 +55,7 @@ O projeto está dividido nos seguintes pacotes dentro de `src/br/fiap/bank/atm`:
 
 1. Clone este repositório:
    ```bash
-   git clone [https://github.com/seu-usuario/fiap-ddd-java-checkpoint2-atm.git](https://github.com/seu-usuario/fiap-ddd-java-checkpoint2-atm.git)
+   git clone [https://github.com/rotadeo/fiap-ddd-java-checkpoint2-atm](https://github.com/rotadeo/fiap-ddd-java-checkpoint2-atm)
 
 2. Navegue até a pasta raiz do código fonte (`src`).
 
