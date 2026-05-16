@@ -61,7 +61,7 @@ O projeto está dividido nos seguintes pacotes dentro de `src/br/fiap/bank/atm`:
 
 3. Compile as classes Java ou abra o projeto na sua IDE favorita (IntelliJ IDEA, Eclipse, VS Code).
 
-4. Execute a classe principal localizada no pacote de aplicação: `br.fiap.bank.atm.Main`
+4. Execute a classe principal localizada no pacote de aplicação: `br.com.fiapbank.Main`
 
 5. Siga as instruções no console para realizar o Setup da conta inicial e, em seguida, opere o Caixa Eletrônico.
 
