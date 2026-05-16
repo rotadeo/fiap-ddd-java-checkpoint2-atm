@@ -22,7 +22,7 @@ O sistema foi redesenhado sob regras rigorosas de arquitetura de software para g
 
 ## 📂 Estrutura de Camadas (Packages)
 
-O projeto está dividido nos seguintes pacotes dentro de `src/br/fiap/bank/atm`:
+O projeto está dividido nos seguintes pacotes dentro de `src/br/com/fiapbank`:
 
 * **`model` (Domínio):** O coração da aplicação. Contém as regras de negócio, invariantes financeiras, *Value Objects* imutáveis (`Dinheiro`, `ContaAcesso`, `Movimentacao`) e as Entidades (`Cliente`, `Conta`). Esta camada não possui dependências de interface visual.
 * **`application` (Orquestração):** Contém os *Services* (`ContaService`, `AutorizacaoService`) e Factories responsáveis por intermediar as ordens do usuário e enviá-las ao domínio.
