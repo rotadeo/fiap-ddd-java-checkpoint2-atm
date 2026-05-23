@@ -16,6 +16,6 @@ public class AutorizacaoService {
         if (senha == null || senha.trim().isEmpty()) {
             return Boolean.FALSE;
         }
-        return this.conta.getContaAcesso().validarSenha(senha);
+        return this.conta.getContaAcesso().autorizar(senha);
     }
 }
