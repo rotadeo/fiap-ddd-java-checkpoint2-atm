@@ -4,10 +4,7 @@ import br.com.fiapbank.application.AutorizacaoService;
 import br.com.fiapbank.application.ContaFactory;
 import br.com.fiapbank.application.ContaService;
 import br.com.fiapbank.infrastructure.ContaRepository;
-import br.com.fiapbank.model.Cliente;
-import br.com.fiapbank.model.Conta;
-import br.com.fiapbank.model.ContaAcesso;
-import br.com.fiapbank.model.Dinheiro;
+import br.com.fiapbank.model.*;
 import br.com.fiapbank.presentation.TerminalBancarioController;
 
 import java.math.BigDecimal;
@@ -34,9 +31,32 @@ public class Main {
             String saldoInput = scanner.nextLine();
             Dinheiro saldoInicial = new Dinheiro(new BigDecimal(saldoInput));
 
+            System.out.println("\nQual tipo de conta deseja abrir?");
+            System.out.println("[ 1 ] Conta Corrente (Com taxa de saque)");
+            System.out.println("[ 2 ] Conta Poupança (Sem taxa, com rendimento mensal)");
+            System.out.print("Escolha: ");
+            int tipoConta = Integer.parseInt(scanner.nextLine());
+
             // 2. CRIANDO A CONTA COM A FÁBRICA
             ContaFactory factory = ContaFactory.getInstance();
-            Conta minhaConta = factory.criarContaCorrente(clienteTitular, acesso, saldoInicial);
+            Conta minhaConta;
+
+            if (tipoConta == 1) {
+                minhaConta = factory.criarContaCorrente(clienteTitular, acesso, saldoInicial);
+                System.out.println("\n[OK] Conta Corrente criada com sucesso!");
+            } else if (tipoConta == 2) {
+                minhaConta = factory.criarContaPoupanca(clienteTitular, acesso, saldoInicial);
+                System.out.println("\n[OK] Conta Poupança criada com sucesso!");
+
+                System.out.println("[SIMULAÇÃO] Avançando o tempo em 30 dias...");
+
+                ContaPoupanca poupanca = (ContaPoupanca) minhaConta;
+                poupanca.renderJuros(0.5); // Rende 0.5% ao mês
+
+                System.out.println("[OK] O rendimento automático mensal foi creditado na conta!");
+            } else {
+                throw new IllegalArgumentException("Opção de conta inválida.");
+            }
 
             // 3. SALVANDO NA INFRAESTRUTURA (BANCO DE DADOS EM MEMÓRIA)
             ContaRepository repository = new ContaRepository();
@@ -59,11 +79,9 @@ public class Main {
             // 6. LIGANDO O CAIXA
             terminal.exibirMenuPrincipal();
 
-        } catch (IllegalArgumentException e) {
-            System.err.println("\nErro de Validação: " + e.getMessage());
-            System.err.println("Por favor, reinicie o sistema e siga as regras de negócio.");
-        } catch (Exception e) {
-            System.err.println("\nErro crítico ao iniciar o FIAP Bank ATM: " + e.getMessage());
+        } catch (RuntimeException e) {
+            System.err.println("\nErro de Validação ou Negócio: " + e.getMessage());
+            System.err.println("Por favor, reinicie o sistema e siga as regras.");
         } finally {
             scanner.close();
         }
