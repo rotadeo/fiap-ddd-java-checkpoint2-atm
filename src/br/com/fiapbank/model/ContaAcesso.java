@@ -1,5 +1,6 @@
 package br.com.fiapbank.model;
 
+import br.com.fiapbank.model.exceptions.ValorInvalidoException;
 import br.com.fiapbank.model.interfaces.Autorizavel;
 
 import java.util.Objects;
@@ -15,10 +16,10 @@ public class ContaAcesso implements Autorizavel {
 
     public ContaAcesso(String senhaForte) {
         if (senhaForte == null || senhaForte.trim().isEmpty()) {
-            throw new IllegalArgumentException("A senha não pode ser nula ou vazia.");
+            throw new ValorInvalidoException("A senha não pode ser nula ou vazia.");
         }
         if (!Pattern.matches(REGEX_SENHA_ATM, senhaForte)) {
-            throw new IllegalArgumentException("Erro: A senha não atende aos requisitos de segurança.");
+            throw new ValorInvalidoException("Formato inválido: A senha deve conter exatamente 6 dígitos numéricos.");
         }
         this.senhaForte = senhaForte;
         this.tentativas = 0;

@@ -1,13 +1,14 @@
 package br.com.fiapbank.application;
 
 import br.com.fiapbank.model.Conta;
+import br.com.fiapbank.model.exceptions.ValorInvalidoException;
 
 public class AutorizacaoService {
     private Conta conta;
 
     public AutorizacaoService(Conta conta) {
         if (conta == null) {
-            throw new IllegalArgumentException("A conta para autorização não pode ser nula.");
+            throw new ValorInvalidoException("A conta fornecida para o serviço não pode ser nula.");
         }
         this.conta = conta;
     }

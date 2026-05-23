@@ -13,7 +13,7 @@ public class ContaPoupanca extends Conta{
 
     public void renderJuros(Double taxaRendimentoPercentual) {
         if (taxaRendimentoPercentual == null || taxaRendimentoPercentual <= 0.0) {
-            throw new IllegalArgumentException("A taxa de rendimento deve ser maior que zero.");
+            throw new ValorInvalidoException("A taxa de rendimento deve ser maior que zero.");
         }
         BigDecimal fator = BigDecimal.valueOf(taxaRendimentoPercentual).divide(new BigDecimal("100"));
         BigDecimal valorRendimento = this.saldo.getValor().multiply(fator);
