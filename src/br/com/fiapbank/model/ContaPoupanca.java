@@ -1,5 +1,7 @@
 package br.com.fiapbank.model;
 
+import br.com.fiapbank.model.exceptions.ValorInvalidoException;
+
 import java.math.BigDecimal;
 
 public class ContaPoupanca extends Conta{
