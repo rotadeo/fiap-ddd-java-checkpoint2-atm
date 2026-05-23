@@ -1,69 +1,73 @@
-# 🏦 FIAP Bank ATM - Versão Beta (DDD & OOP)
+# 🏦 FIAP Bank ATM - Versão Resiliente (DDD & OOP)
 
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Arquitetura](https://img.shields.io/badge/Architecture-DDD-blue?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Finalizado-success?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Checkpoint%203-success?style=for-the-badge)
 
-Este projeto consiste na evolução (versão "Beta") do simulador de Caixa Eletrônico (ATM) do **FIAP Bank**. O objetivo principal desta versão foi refatorar um código procedural para uma arquitetura robusta baseada em **Orientação a Objetos (OOP)** e princípios de **Domain-Driven Design (DDD)**.
+Este projeto consiste na evolução contínua do simulador de Caixa Eletrônico (ATM) do **FIAP Bank**. Após uma refatoração profunda para o **Domain-Driven Design (DDD)** no Checkpoint 2, esta nova versão (Checkpoint 3) introduz **Contratos de Interface** e uma arquitetura rigorosa de **Resiliência e Tolerância a Falhas**, erradicando quebras de sistema (crashes) e exceções genéricas.
 
-Projeto desenvolvido como parte da avaliação do **Checkpoint 2** da disciplina de Engenharia de Software da FIAP.
+Projeto desenvolvido para a disciplina de Engenharia de Software da FIAP (Turma 2ESPG).
 
 ---
 
-## 🏗️ Decisões Arquiteturais
+## 🏗️ Evolução Arquitetural (Checkpoint 3)
 
-O sistema foi redesenhado sob regras rigorosas de arquitetura de software para garantir segurança, coesão e baixo acoplamento:
+O sistema foi elevado a um novo patamar de robustez, seguindo práticas de Engenharia de Software Avançada:
 
-1. **Abolição de Tipos Primitivos:** O domínio do sistema ignora completamente tipos primitivos (`int`, `double`, `boolean`). Toda a lógica numérica e condicional utiliza **Classes Wrapper** (`Integer`, `Double`, `Boolean`) e `BigDecimal` para garantir precisão absoluta nas operações financeiras.
-2. **Separação de Responsabilidades:** O projeto abandona o *Default Package* e adota uma estrutura em 4 camadas de software isoladas.
-3. **Fail-Fast & Autovalidação:** Entidades e *Value Objects* nunca nascem em estado inválido. Construtores são blindados e utilizam Expressões Regulares (Regex) para garantir a integridade dos dados (ex: Senhas obrigatórias de 6 dígitos e nomes contendo apenas letras e sobrenome).
+1. [cite_start]**Contratos Sólidos (Interfaces):** Introdução da interface `Autorizavel`, estabelecendo um contrato rígido para qualquer entidade que exija autenticação no ecossistema do banco, garantindo previsibilidade e segurança no acesso [cite: 295-299, 337].
+2. **Linguagem Ubíqua nas Falhas:** Substituição de exceções genéricas do Java (`IllegalArgumentException`) por **Unchecked Domain Exceptions** (ex: `SaldoInsuficienteException`, `ValorInvalidoException`). [cite_start]O domínio agora "fala" o idioma do negócio mesmo quando as regras são violadas [cite: 305-314, 337].
+3. **Resiliência de Interface (Anti-Crash):** A camada de apresentação (`presentation`) foi blindada com blocos `try/catch`. [cite_start]Tentativas de burlar regras de negócio agora resultam em mensagens amigáveis e retorno seguro ao menu principal, impedindo a exibição de Stack Traces para o cliente [cite: 278-279, 320-323, 337].
 
 ---
 
 ## 📂 Estrutura de Camadas (Packages)
 
-O projeto está dividido nos seguintes pacotes dentro de `src/br/com/fiapbank`:
+O projeto adota uma estrutura em 4 camadas de software isoladas (`src/br/fiap/bank/atm`):
 
-* **`model` (Domínio):** O coração da aplicação. Contém as regras de negócio, invariantes financeiras, *Value Objects* imutáveis (`Dinheiro`, `ContaAcesso`, `Movimentacao`) e as Entidades (`Cliente`, `Conta`). Esta camada não possui dependências de interface visual.
-* **`application` (Orquestração):** Contém os *Services* (`ContaService`, `AutorizacaoService`) e Factories responsáveis por intermediar as ordens do usuário e enviá-las ao domínio.
-* **`presentation` (Apresentação):** A única camada autorizada a interagir com o usuário (`Scanner`, `System.out`). Responsável pelo fluxo do menu, validações de *input* contínuo (loop) e exibição amigável de extratos.
-* **`infrastructure` (Infraestrutura):** Responsável pela simulação de persistência. Contém o `ContaRepository`, atuando como um banco de dados em memória para armazenar a conta instanciada durante o ciclo de vida da aplicação.
-
----
-
-## 🧩 Padrões de Projeto Aplicados (Design Patterns)
-
-* **Template Method:** Implementado na classe abstrata `Conta` no método `realizarSaque()`. Define o algoritmo rígido de saque (validação de saldo -> débito -> registro no extrato) e delega a cobrança de tarifas (`aplicarRegraDeTaxa()`) para as subclasses concretas (`ContaCorrente` e `ContaPoupanca`) via polimorfismo.
-* **Singleton:** Aplicado na `ContaFactory` para garantir que apenas uma única instância da fábrica seja alocada em memória durante toda a execução da aplicação, economizando recursos computacionais.
-* **Factory Method:** Centraliza e encapsula a complexidade da instanciação das contas, retornando a abstração (`Conta`) para o resto do sistema.
+* **`model` (Domínio):** O coração da aplicação. Contém as regras de negócio, *Value Objects* imutáveis, e as Entidades.
+   * **`interfaces`:** Contratos do sistema (ex: `Autorizavel`).
+   * **`exceptions`:** Árvore de exceções customizadas de negócio (`RuntimeException`).
+* **`application` (Orquestração):** *Services* e *Factories* que intermedeiam as ordens do usuário e as enviam ao domínio.
+* **`presentation` (Apresentação):** Interação com o usuário (`Scanner`), responsável por capturar as intenções e tratar os erros de domínio graciosamente, mantendo o loop da sessão ativo.
+* **`infrastructure` (Infraestrutura):** Simulação de persistência (Banco de Dados em Memória).
 
 ---
 
-## ✨ Funcionalidades
+## 🧩 Padrões de Projeto e Conceitos Aplicados
 
-- [x] **Setup de Abertura de Conta:** Simulação do gerente criando uma conta com validação estrita de Nome (apenas letras, obriga sobrenome), Senha (exatamente 6 dígitos numéricos) e saldo inicial.
-- [x] **Fluxo de Acesso Seguro:** O terminal ATM bloqueia a conta temporariamente e encerra a sessão após 3 tentativas de senha incorretas.
-- [x] **Consultar Saldo:** Exibição do saldo mascarado e formatado financeiramente.
-- [x] **Depósitos e Saques:** Operações seguras que checam invariantes (ex: impede saque com saldo insuficiente).
-- [x] **Histórico de Movimentações:** Extrato completo contendo Data/Hora exatas (`LocalDateTime`), Tipo de Transação (`DEPOSITO`, `SAQUE`, `TAXA`, `RENDIMENTO`) e o valor da operação protegido por imutabilidade.
+* **Template Method:** Define o algoritmo rígido de saque na classe mãe abstrata `Conta` e delega a cobrança de tarifas (`aplicarRegraDeTaxa()`) para as subclasses concretas via polimorfismo.
+* **Fail-Fast & Autovalidação:** Entidades que se autoprotegem nos construtores, bloqueando dados inválidos no momento da instanciação.
+* **Singleton & Factory Method:** Criação centralizada de objetos (contas) com controle de instância única em memória.
+* **Programação Orientada a Interfaces:** Desacoplamento do sistema de autenticação, dependendo de abstrações (`Autorizavel`) em vez de implementações concretas.
+
+---
+
+## ✨ Funcionalidades do Terminal
+
+- [x] **Setup Dinâmico:** Escolha entre abertura de **Conta Corrente** (com taxa de saque) ou **Conta Poupança** (com simulação de rendimento).
+- [x] **Autenticação Segura:** Bloqueio automático da conta após 3 tentativas inválidas de senha.
+- [x] **Operações de Caixa:** Depósitos e Saques protegidos por validações de saldo e valores negativos.
+- [x] **Extrato Imutável:** Histórico de movimentações detalhado (`LocalDateTime`), registrando `DEPOSITO`, `SAQUE`, `TAXA` e `RENDIMENTO`.
 
 ---
 
 ## 🚀 Como Executar o Projeto
 
-**Pré-requisitos:** Java 11 ou superior instalado na máquina.
+**Pré-requisitos:** Java 11 ou superior instalado.
 
 1. Clone este repositório:
    ```bash
-   git clone [https://github.com/rotadeo/fiap-ddd-java-checkpoint2-atm](https://github.com/rotadeo/fiap-ddd-java-checkpoint2-atm)
+   git clone [https://github.com/rotadeo/fiap-ddd-java-checkpoint2-atm.git)
+   
+2. Navegue até a pasta raiz do código-fonte.
 
-2. Navegue até a pasta raiz do código fonte (`src`).
+3. Compile as classes ou abra o projeto na sua IDE favorita.
 
-3. Compile as classes Java ou abra o projeto na sua IDE favorita (IntelliJ IDEA, Eclipse, VS Code).
+4. Execute a classe principal: `br.fiap.bank.atm.Main`
 
-4. Execute a classe principal localizada no pacote de aplicação: `br.com.fiapbank.Main`
-
-5. Siga as instruções no console para realizar o Setup da conta inicial e, em seguida, opere o Caixa Eletrônico.
+5. Realize o Setup inicial e opere o terminal de autoatendimento.
 
 ## 👨‍💻 Autor
 - Rodrigo Cardoso Tadeo - Desenvolvimento e Arquitetura * RM: [562010]
+
+- Turma: 2ESPG - Engenharia de Software
