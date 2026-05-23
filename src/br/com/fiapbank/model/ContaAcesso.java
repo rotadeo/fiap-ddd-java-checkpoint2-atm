@@ -1,9 +1,11 @@
 package br.com.fiapbank.model;
 
+import br.com.fiapbank.model.interfaces.Autorizavel;
+
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class ContaAcesso {
+public class ContaAcesso implements Autorizavel {
     private static final Integer MAXIMO_TENTAIVAS = 3;
     private static final String REGEX_SENHA_ATM = "^\\d{6}$";
 
@@ -23,7 +25,8 @@ public class ContaAcesso {
         this.bloqueado = Boolean.FALSE;
     }
 
-    public Boolean validarSenha(String senha) {
+    @Override
+    public Boolean autorizar(String senha) {
         if (this.bloqueado) {
             return Boolean.FALSE;
         }
@@ -43,6 +46,7 @@ public class ContaAcesso {
         this.tentativas = 0;
     }
 
+    @Override
     public Boolean isBloqueado() {
         return this.bloqueado;
     }
