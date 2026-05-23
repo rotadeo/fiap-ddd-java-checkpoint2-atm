@@ -1,5 +1,8 @@
 package br.com.fiapbank.model;
 
+import br.com.fiapbank.model.exceptions.SaldoInsuficienteException;
+import br.com.fiapbank.model.exceptions.ValorInvalidoException;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,17 +52,17 @@ public abstract class Conta extends BaseEntity {
 
     public void sacar(Dinheiro valor) {
         if (valor == null || !valor.isMaiorOuIgualQue(new Dinheiro(BigDecimal.ZERO))) {
-            throw new IllegalArgumentException("O valor do saque deve ser maior que zero.");
+            throw new ValorInvalidoException("O valor do saque deve ser maior que zero.");
         }
         if (!this.saldo.isMaiorOuIgualQue(valor)) {
-            throw new IllegalArgumentException("Saldo insuficiente para realizar o saque.");
+            throw new SaldoInsuficienteException("Saldo insuficiente para realizar o saque.");
         }
         this.saldo = this.saldo.subtrair(valor);
     }
 
     private void depositar(Dinheiro valor) {
         if (valor == null || !valor.isMaiorOuIgualQue(new Dinheiro(java.math.BigDecimal.ZERO))) {
-            throw new IllegalArgumentException("O valor do depósito deve ser maior que zero.");
+            throw new ValorInvalidoException("O valor do depósito deve ser maior que zero.");
         }
         this.saldo = this.saldo.somar(valor);
     }
