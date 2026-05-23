@@ -1,5 +1,7 @@
 package br.com.fiapbank.model;
 
+import br.com.fiapbank.model.exceptions.ValorInvalidoException;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -9,28 +11,28 @@ public class Dinheiro {
 
     public Dinheiro(BigDecimal valor) {
         if (valor == null) {
-            throw new IllegalArgumentException("O valor monetário não pode ser nulo.");
+            throw new ValorInvalidoException("O valor monetário não pode ser nulo.");
         }
         this.valor = valor.setScale(2, RoundingMode.HALF_UP);
     }
 
     public Dinheiro somar(Dinheiro outroValor) {
         if (outroValor == null) {
-            throw new IllegalArgumentException("O valor para soma não pode ser nulo.");
+            throw new ValorInvalidoException("O valor para soma não pode ser nulo.");
         }
         return new Dinheiro(this.valor.add(outroValor.valor));
     }
 
     public Dinheiro subtrair(Dinheiro outroValor) {
         if (outroValor == null) {
-            throw new IllegalArgumentException("O valor para subtração não pode ser nulo.");
+            throw new ValorInvalidoException("O valor para subtração não pode ser nulo.");
         }
         return new Dinheiro(this.valor.subtract(outroValor.valor));
     }
 
     public Boolean isMaiorOuIgualQue(Dinheiro outroValor) {
         if (outroValor == null) {
-            throw new IllegalArgumentException("O valor para comparação não pode ser nulo");
+            throw new ValorInvalidoException("O valor para comparação não pode ser nulo");
         }
         return this.valor.compareTo(outroValor.valor) >= 0;
     }
