@@ -1,5 +1,7 @@
 package br.com.fiapbank.model;
 
+import br.com.fiapbank.model.exceptions.ValorInvalidoException;
+
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -10,14 +12,14 @@ public class Cliente extends BaseEntity{
     public Cliente(String nomeCompleto) {
         super();
         if (nomeCompleto == null || nomeCompleto.trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome completo do cliente é obrigatório.");
+            throw new ValorInvalidoException("O nome completo do cliente é obrigatório.");
         }
         if (!Pattern.matches(REGEX_NOME_VALIDO, nomeCompleto)) {
-            throw new IllegalArgumentException("Nome inválido! O titular deve conter apenas letras e espaços (sem números ou símbolos).");
+            throw new ValorInvalidoException("Nome inválido! O titular deve conter apenas letras e espaços (sem números ou símbolos).");
         }
         String[] partesDoNome = nomeCompleto.trim().split("\\s+");
         if (partesDoNome.length < 2) {
-            throw new IllegalArgumentException("Nome incompleto! Por favor, insira o nome e pelo menos um sobrenome.");
+            throw new ValorInvalidoException("Nome incompleto! Por favor, insira o nome e pelo menos um sobrenome.");
         }
         this.nomeCompleto = nomeCompleto.trim();
     }

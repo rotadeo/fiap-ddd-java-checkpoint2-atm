@@ -1,5 +1,7 @@
 package br.com.fiapbank.model;
 
+import br.com.fiapbank.model.exceptions.ValorInvalidoException;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -10,13 +12,13 @@ public class Movimentacao {
 
     public Movimentacao(LocalDateTime dataHora, Dinheiro valor, TipoMovimentacao tipo) {
         if (dataHora == null) {
-            throw new IllegalArgumentException("A data e hora da movimentação são obrigatórias.");
+            throw new ValorInvalidoException("A data e hora da movimentação são obrigatórias.");
         }
         if (valor == null) {
-            throw new IllegalArgumentException("O valor da movimentação é obrigatório.");
+            throw new ValorInvalidoException("O valor da movimentação é obrigatório.");
         }
         if (tipo == null) {
-            throw new IllegalArgumentException("O tipo de movimentação é obrigatório.");
+            throw new ValorInvalidoException("O tipo de movimentação é obrigatório.");
         }
         this.dataHora = dataHora;
         this.valor = valor;
