@@ -102,26 +102,45 @@ public class TerminalBancarioController {
         System.out.println("\n--- OPERAÇÃO DE DEPÓSITO ---");
         System.out.print("Digite o valor que deseja depositar: R$ ");
 
-        String inputValor = scanner.nextLine();
-        BigDecimal valorConvertido = new BigDecimal(inputValor);
+        try {
+            String inputValor = scanner.nextLine();
+            BigDecimal valorConvertido = new BigDecimal(inputValor);
+            Dinheiro valorDeposito = new Dinheiro(valorConvertido);
 
-        Dinheiro valorDeposito = new Dinheiro(valorConvertido);
+            contaService.realizarDeposito(valorDeposito);
+            System.out.println("Depósito realizado com sucesso!");
 
-        contaService.realizarDeposito(valorDeposito);
-        System.out.println("Depósito realizado com sucesso!");
+        } catch (NumberFormatException e) {
+            System.out.println("[!] Erro de Formato: Por favor, digite um valor numérico válido (ex: 50.00).");
+        } catch (RuntimeException e) {
+            // Captura qualquer exceção de negócio (como ValorInvalidoException)
+            System.out.println("[!] Operação Recusada: " + e.getMessage());
+        }
     }
 
     public void realizarSaque() {
         System.out.println("\n--- OPERAÇÃO DE SAQUE ---");
         System.out.print("Digite o valor que deseja sacar: R$ ");
 
-        String inputValor = scanner.nextLine();
-        BigDecimal valorConvertido = new BigDecimal(inputValor);
+        try {
+            String inputValor = scanner.nextLine();
+            BigDecimal valorConvertido = new BigDecimal(inputValor);
+            Dinheiro valorSaque = new Dinheiro(valorConvertido);
 
-        Dinheiro valorSaque = new Dinheiro(valorConvertido);
+            // O serviço executará o Template Method. Se o saldo falhar, lançará SaldoInsuficienteException.
+            contaService.realizarSaque(valorSaque);
+            System.out.println("Retire as cédulas na boca do caixa. Saque efetuado com sucesso!");
 
-        contaService.realizarSaque(valorSaque);
-        System.out.println("Retire as cédulas na boca do caixa. Saque efetuado com sucesso!");
+        } catch (NumberFormatException e) {
+            System.out.println("[!] Erro de Formato: Por favor, digite um valor numérico válido (ex: 50.00).");
+        } catch (RuntimeException e) {
+            // Graças ao polimorfismo das exceções, o RuntimeException apanha tanto
+            // o SaldoInsuficienteException quanto o ValorInvalidoException.
+            // O e.getMessage() vai imprimir a mensagem de erro elegante do nosso domínio.
+            System.out.println("\n[!] STATUS DA TRANSAÇÃO: ERRO");
+            System.out.println(e.getMessage());
+            System.out.println("Por favor, reveja o valor e tente novamente.");
+        }
     }
 
     public void exibirMovimentacoes() {
