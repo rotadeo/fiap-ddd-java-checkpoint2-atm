@@ -1,73 +1,67 @@
-# 🏦 FIAP Bank ATM - Versão Resiliente (DDD & OOP)
+# 🏦 FIAP Bank ATM - Core Banking & Architecture
 
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Arquitetura](https://img.shields.io/badge/Architecture-DDD-blue?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Checkpoint%203-success?style=for-the-badge)
+![Padrões](https://img.shields.io/badge/Design%20Patterns-GoF-brightgreen?style=for-the-badge)
 
-Este projeto consiste na evolução contínua do simulador de Caixa Eletrônico (ATM) do **FIAP Bank**. Após uma refatoração profunda para o **Domain-Driven Design (DDD)** no Checkpoint 2, esta nova versão (Checkpoint 3) introduz **Contratos de Interface** e uma arquitetura rigorosa de **Resiliência e Tolerância a Falhas**, erradicando quebras de sistema (crashes) e exceções genéricas.
+Um simulador de Caixa Eletrônico (ATM) construído do zero em Java, focado na aplicação prática de **Engenharia de Software Avançada**.
 
-Projeto desenvolvido para a disciplina de Engenharia de Software da FIAP (Turma 2ESPG).
-
----
-
-## 🏗️ Evolução Arquitetural (Checkpoint 3)
-
-O sistema foi elevado a um novo patamar de robustez, seguindo práticas de Engenharia de Software Avançada:
-
-1. [cite_start]**Contratos Sólidos (Interfaces):** Introdução da interface `Autorizavel`, estabelecendo um contrato rígido para qualquer entidade que exija autenticação no ecossistema do banco, garantindo previsibilidade e segurança no acesso [cite: 295-299, 337].
-2. **Linguagem Ubíqua nas Falhas:** Substituição de exceções genéricas do Java (`IllegalArgumentException`) por **Unchecked Domain Exceptions** (ex: `SaldoInsuficienteException`, `ValorInvalidoException`). [cite_start]O domínio agora "fala" o idioma do negócio mesmo quando as regras são violadas [cite: 305-314, 337].
-3. **Resiliência de Interface (Anti-Crash):** A camada de apresentação (`presentation`) foi blindada com blocos `try/catch`. [cite_start]Tentativas de burlar regras de negócio agora resultam em mensagens amigáveis e retorno seguro ao menu principal, impedindo a exibição de Stack Traces para o cliente [cite: 278-279, 320-323, 337].
+Este projeto foi desenvolvido com o objetivo de demonstrar a evolução de um sistema procedural para uma arquitetura robusta, aplicando os pilares da **Orientação a Objetos (OOP)**, **Domain-Driven Design (DDD)** e **Design Patterns**.
 
 ---
 
-## 📂 Estrutura de Camadas (Packages)
+## 🎯 O Desafio de Negócio
 
-O projeto adota uma estrutura em 4 camadas de software isoladas (`src/br/fiap/bank/atm`):
-
-* **`model` (Domínio):** O coração da aplicação. Contém as regras de negócio, *Value Objects* imutáveis, e as Entidades.
-   * **`interfaces`:** Contratos do sistema (ex: `Autorizavel`).
-   * **`exceptions`:** Árvore de exceções customizadas de negócio (`RuntimeException`).
-* **`application` (Orquestração):** *Services* e *Factories* que intermedeiam as ordens do usuário e as enviam ao domínio.
-* **`presentation` (Apresentação):** Interação com o usuário (`Scanner`), responsável por capturar as intenções e tratar os erros de domínio graciosamente, mantendo o loop da sessão ativo.
-* **`infrastructure` (Infraestrutura):** Simulação de persistência (Banco de Dados em Memória).
+O sistema simula o terminal de autoatendimento do FIAP Bank. Ele permite a abertura dinâmica de contas (Corrente e Poupança), autenticação segura de usuários e operações financeiras diárias. O grande diferencial deste projeto não é *o que* ele faz, mas *como* ele faz: o núcleo do sistema foi projetado para ser inviolável, tolerante a falhas e altamente escalável.
 
 ---
 
-## 🧩 Padrões de Projeto e Conceitos Aplicados
+## 🏗️ Decisões de Arquitetura e Engenharia
 
-* **Template Method:** Define o algoritmo rígido de saque na classe mãe abstrata `Conta` e delega a cobrança de tarifas (`aplicarRegraDeTaxa()`) para as subclasses concretas via polimorfismo.
-* **Fail-Fast & Autovalidação:** Entidades que se autoprotegem nos construtores, bloqueando dados inválidos no momento da instanciação.
-* **Singleton & Factory Method:** Criação centralizada de objetos (contas) com controle de instância única em memória.
-* **Programação Orientada a Interfaces:** Desacoplamento do sistema de autenticação, dependendo de abstrações (`Autorizavel`) em vez de implementações concretas.
+Este projeto foi construído sob regras rigorosas de qualidade de código (Clean Code):
+
+* **Domain-Driven Design (DDD):** O sistema é dividido em 4 camadas isoladas (`presentation`, `application`, `model` e `infrastructure`). O coração financeiro (`model`) não possui nenhuma dependência de interface gráfica ou console.
+* **Erradicação de Tipos Primitivos:** Combate direto à *Primitive Obsession*. Não há uso de `int`, `double` ou `boolean` no domínio. O dinheiro é tratado de forma precisa com `BigDecimal` encapsulado em um Value Object (`Dinheiro`).
+* **Autovalidação e Fail-Fast:** Entidades (`Cliente`, `Conta`) e Value Objects (`ContaAcesso`, `Movimentacao`) blindados. Construtores validam regras via Expressões Regulares (Regex) e bloqueiam a criação de estados inválidos no milissegundo zero.
+* **Resiliência e Contratos:** Implementação de **Programação Orientada a Interfaces** (ex: `Autorizavel`). Substituição completa de exceções genéricas por uma árvore de **Unchecked Domain Exceptions** (`SaldoInsuficienteException`, `ValorInvalidoException`), garantindo que o sistema trate erros de negócio com elegância sem "crashar" o terminal.
 
 ---
 
-## ✨ Funcionalidades do Terminal
+## 🧩 Padrões de Projeto (Design Patterns)
 
-- [x] **Setup Dinâmico:** Escolha entre abertura de **Conta Corrente** (com taxa de saque) ou **Conta Poupança** (com simulação de rendimento).
-- [x] **Autenticação Segura:** Bloqueio automático da conta após 3 tentativas inválidas de senha.
-- [x] **Operações de Caixa:** Depósitos e Saques protegidos por validações de saldo e valores negativos.
-- [x] **Extrato Imutável:** Histórico de movimentações detalhado (`LocalDateTime`), registrando `DEPOSITO`, `SAQUE`, `TAXA` e `RENDIMENTO`.
+Para evitar complexidade condicional (`if/else` encadeados) e garantir o reaproveitamento de código, os seguintes padrões GoF foram aplicados:
+
+* **Template Method:** Centraliza o algoritmo rígido de transações financeiras na superclasse abstrata `Conta`, delegando a cobrança de tarifas bancárias para as subclasses (`ContaCorrente` e `ContaPoupanca`) via polimorfismo.
+* **Factory Method:** Encapsula a complexidade da criação e montagem de contas, retornando a abstração para as camadas superiores.
+* **Singleton:** Garante que a fábrica de contas (`ContaFactory`) possua uma instância única em memória, otimizando o consumo de recursos da aplicação.
+
+---
+
+## ✨ Funcionalidades Principais
+
+- **Setup de Contas Dinâmico:** Simulação de *Backoffice* para abertura de Conta Corrente (com taxa de saque) e Conta Poupança (com simulação de rendimento/juros).
+- **Autenticação Segura:** Controle de bloqueio automático de conta após 3 tentativas inválidas.
+- **Operações Transacionais:** Depósitos e Saques protegidos por invariantes de domínio.
+- **Extrato de Auditoria:** Histórico imutável de movimentações, formatado com `LocalDateTime`, identificando e separando o capital principal de `TAXA` e `RENDIMENTO`.
 
 ---
 
 ## 🚀 Como Executar o Projeto
 
-**Pré-requisitos:** Java 11 ou superior instalado.
+**Pré-requisitos:** Java 11 ou superior.
 
 1. Clone este repositório:
    ```bash
    git clone [https://github.com/rotadeo/fiap-ddd-java-checkpoint2-atm.git)
-   
-2. Navegue até a pasta raiz do código-fonte.
 
-3. Compile as classes ou abra o projeto na sua IDE favorita.
+2. Navegue até a raiz do código-fonte (src).
 
-4. Execute a classe principal: `br.fiap.bank.atm.Main`
+3. Importe o projeto na sua IDE de preferência (IntelliJ, Eclipse, VS Code).
 
-5. Realize o Setup inicial e opere o terminal de autoatendimento.
+4. Execute a classe de startup localizada na camada de aplicação:
+br.fiap.bank.atm.Main
+
+5. Siga as instruções no console interativo para realizar o Setup da conta e operar o terminal de autoatendimento.
 
 ## 👨‍💻 Autor
-- Rodrigo Cardoso Tadeo - Desenvolvimento e Arquitetura * RM: [562010]
-
-- Turma: 2ESPG - Engenharia de Software
+- Rodrigo Cardoso Tadeo Estudante de Engenharia de Software na FIAP com foco em desenvolvimento de sistemas escaláveis e arquitetura corporativa.
